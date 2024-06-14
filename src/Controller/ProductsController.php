@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Cake\Event\Event;
-
+use Cake\Event\EventInterface;
 /**
  * Products Controller
  *
@@ -14,10 +14,13 @@ use Cake\Event\Event;
 class ProductsController extends AppController
 {
 
-    public function berforeFilter(Event $event)
+    public function beforeFilter(EventInterface $event)
     {
         parent::beforeFilter($event);
         $isLogin = $this->request->getSession()->read('login');
+        if(!$isLogin){
+            return $this->redirect(['controller' => 'users', 'action' => 'login']);
+        }
     }
 
     /**

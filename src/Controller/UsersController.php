@@ -37,6 +37,10 @@ class UsersController extends AppController
 
     public function login()
     {
+        $session = $this->request->getSession();
+        if($session->read('login')){
+            return $this->redirect(['controller' => 'products', 'action' => 'index']);
+        }
         $user = $this->Users->newEmptyEntity();
         if ($this->request->is('post','get')) {
             $param = $this->request->getData();
@@ -53,9 +57,10 @@ class UsersController extends AppController
                 $this->Flash->error(__('Login gagal.'));
                 return $this->redirect(['action' => 'login']);
             }
-            $this->request->getSession()->write('Auth.User', $query);
+            $session->write('login', true);
+            $session->write('currentUserID', $query->id);
+            // $this->request->getSession()->write('Auth.User', $query);
             $this->Flash->success(__('Login success.'));
-
             return $this->redirect(['controller' => 'Products', 'action' => 'index']);
         }
         $this->set(compact('user'));
